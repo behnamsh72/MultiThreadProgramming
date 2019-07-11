@@ -6,19 +6,20 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) {
 
-        Thread task=new PrimeGenerator();
-        task.start();
+    FileSearch searcher=new FileSearch("/home/behnam/","log.txt");
+    Thread thread=new Thread(searcher);
 
+    //start the thread
+    thread.start();
+
+    //wait for 10 seconds
         try {
             TimeUnit.SECONDS.sleep(5);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        task.interrupt();
-
-        System.out.printf("Main:Status of the thread : %s\n",task.getState());
-        System.out.printf("Main: isInterrupted: %s\n",task.isInterrupted());
-        System.out.printf("Main: isAlive: %s\n",task.isAlive());
-
+        //Interrupts the thread
+        thread.interrupt();
     }
 }
