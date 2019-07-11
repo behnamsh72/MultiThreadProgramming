@@ -5,21 +5,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
+        ConsoleClock clock=new ConsoleClock();
+        Thread thread=new Thread(clock);
 
-    FileSearch searcher=new FileSearch("/home/behnam/","log.txt");
-    Thread thread=new Thread(searcher);
-
-    //start the thread
-    thread.start();
-
-    //wait for 10 seconds
+        //Start the Thread
+        thread.start();
         try {
             TimeUnit.SECONDS.sleep(5);
-
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //Interrupts the thread
         thread.interrupt();
     }
 }
