@@ -1,20 +1,30 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        ConsoleClock clock=new ConsoleClock();
-        Thread thread=new Thread(clock);
+        DataSourcesLoader dataSourcesLoader=new DataSourcesLoader();
+        Thread thread1=new Thread(dataSourcesLoader,"DataSourcesLoader");
 
-        //Start the Thread
-        thread.start();
+
+        NetworkConnectionLoader networkConnectionLoader=new NetworkConnectionLoader();
+        Thread thread2=new Thread(networkConnectionLoader,"NetworkConnectionLoader");
+        thread1.start();
+        thread2.start();
+
+
+
+        //wait for the finalization of the two threads
         try {
-            TimeUnit.SECONDS.sleep(5);
+            thread1.join();
+            thread2.join();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        thread.interrupt();
+        System.out.printf("Main: Configuration has been loaded: %s\n",new Date());
     }
 }
