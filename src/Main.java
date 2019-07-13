@@ -8,19 +8,18 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        //Creates the Task
-        Task task=new Task();
-        Thread thread=new Thread(task);
-        //sets the uncaught Exception handler
-        thread.setUncaughtExceptionHandler(new ExceptionHandler());
-        //Starts the thread
-        thread.start();
+        UnsafeTask task=new UnsafeTask();
+        //Throw ten thread objects
+        for(int i=0;i<10;i++){
+            Thread thread=new Thread(task);
+            thread.start();
 
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.printf("Thread has finished\n");
+
     }
 }
