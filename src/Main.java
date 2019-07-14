@@ -2,17 +2,29 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        MyThreadFactory factory = new MyThreadFactory("My Thread Factory");
-        Task task = new Task();
-        Thread thread;
-        System.out.printf("Starting the Threads\n");
-        for (int i = 0; i < 10; i++) {
-            thread = factory.newThread(task);
-            thread.start();
-        }
+        ParkingCash cash=new ParkingCash();
+        ParkingStats stats=new ParkingStats(cash);
 
-        System.out.printf("Factory Stats:\n");
-        System.out.printf("%s\n", factory.getStats());
+        System.out.printf("Parking simulator");
+
+        int numberOfSensors=2*Runtime.getRuntime().availableProcessors();
+        Thread[] threads=new Thread[numberOfSensors];
+        for(int i=0;i<numberOfSensors;i++){
+            Sensor sensor=new Sensor(stats);
+            Thread thread=new Thread(sensor);
+            thread.start();
+            threads[i]=thread;
+        }
+        for(int i=0;i<numberOfSensors;i++){
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.printf("Number of cars: %d\n",stats.getNumberCars());
+        System.out.printf("Number of motorcycles:%d\n",stats.getNumberMotorcycles());
+        cash.close();
 
     }
 }
