@@ -1,25 +1,29 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.TimeUnit;
+
 
 public class Main {
     public static void main(String[] args) {
-        UnsafeTask task=new UnsafeTask();
-        //Throw ten thread objects
-        for(int i=0;i<10;i++){
-            Thread thread=new Thread(task);
-            thread.start();
+        int numberOfThreads = 2 * Runtime.getRuntime().availableProcessors();
+        MyThreadGroup threadGroup = new MyThreadGroup("My ThreadGroup");
+        Task task = new Task();
 
-            try {
-                TimeUnit.SECONDS.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        //Create the thread objects associated to the thread group
+        for (int i = 0; i < numberOfThreads; i++) {
+            Thread t = new Thread(threadGroup, task);
+            t.start();
         }
+
+        System.out.printf("Number of threads: %d\n", threadGroup.activeCount());
+        System.out.printf("Information about the thread group\n");
+        threadGroup.list();
+
+        //Write information about the status of the Thread objects to the console
+
+        Thread[] threads = new Thread[threadGroup.activeCount()];
+        threadGroup.enumerate(threads);
+        for (int i = 0; i < threadGroup.activeCount(); i++) {
+            System.out.printf("Thread %s: %s\n", threads[i].getName(), threads[i].getState());
+        }
+
 
     }
 }
